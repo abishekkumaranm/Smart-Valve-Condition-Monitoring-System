@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>Industrial Valve Monitoring</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+
+</head>
+
+<body>
+
+<h1>Industrial Valve Monitoring Dashboard</h1>
+
+<!-- INDUSTRIAL STATUS BAR -->
+
+<div class="top-status-bar">
+
+<div class="status-card">
+<div class="status-title">Plant Status</div>
+<div id="plantStatus">NORMAL</div>
+</div>
+
+
+<div class="status-card">
+<div class="status-title">Active Valves</div>
+<div id="activeValves">--</div>
+</div>
+
+<div class="status-card">
+<div class="status-title">Critical Alerts</div>
+<div id="criticalCount">0</div>
+</div>
+
+<div class="status-card">
+<div class="status-title">Network</div>
+<div id="networkStatus">ONLINE</div>
+</div>
+
+</div>
+<!-- USER / LOGOUT (top-right) -->
+<div class="top-user-bar" id="topUserBar">
+  <div class="user-greeting">Signed in as <strong id="userNameDisplay">—</strong></div>
+  <button id="logoutBtn" class="btn-logout">Logout</button>
+</div>
+<!-- INDUSTRY 5.0 OPERATOR PANEL -->
+
+<h2>Operator Control Center</h2>
+
+<div class="operator-panel">
+
+<div class="operator-card">
+<h3>Active Operator</h3>
+<div id="operatorName">Operator-01</div>
+</div>
+
+<div class="operator-card">
+<h3>Shift Status</h3>
+<div id="shiftStatus">Running</div>
+</div>
+
+<div class="operator-card">
+<h3>Safety Mode</h3>
+<div id="safetyStatus">SAFE</div>
+</div>
+
+<div class="operator-card">
+<h3>Manual Override</h3>
+<button id="overrideBtn">Enable</button>
+</div>
+
+</div>
+
+<div id="alertBox" class="alert-box"></div>
+
+<label>Select Valve:</label>
+
+<select id="valveSelect">
+<option value="1">Valve 1</option>
+<option value="2">Valve 2</option>
+<option value="3">Valve 3</option>
+<option value="4">Valve 4</option>
+<option value="5">Valve 5</option>
+<option value="6">Valve 6</option>
+<option value="7">Valve 7</option>
+<option value="8">Valve 8</option>
+<option value="9">Valve 9</option>
+<option value="10">Valve 10</option>
+</select>
+
+<button onclick="downloadReport()">Download Report</button>
+
+<!-- SENSOR DATA -->
+
+<div class="card">
+
+<h3>Pressure</h3>
+<h2 id="pressure">--</h2>
+
+<h3>Temperature</h3>
+<h2 id="temp">--</h2>
+
+<h3>Vibration</h3>
+<h2 id="vibration">--</h2>
+
+<h3>Valve Position</h3>
+<h2 id="position">--</h2>
+
+<h3>Health Score</h3>
+<h2 id="health">--</h2>
+
+<h3>Status</h3>
+<h2 id="status">--</h2>
+
+<div class="rul-box">
+<div class="rul-title">AI Remaining Useful Life</div>
+<div id="rulValue" class="rul-value">--</div>
+</div>
+
+</div>
+
+<!-- PRESSURE GAUGE -->
+
+<h2>Pressure Gauge</h2>
+<div id="pressureGauge" style="width:300px;height:300px;"></div>
+
+<!-- AI MAINTENANCE -->
+
+<h2>AI Maintenance Recommendation</h2>
+
+<div id="maintenanceAI" class="ai-panel">
+<div class="ai-title">System Analysis</div>
+<div id="aiMessage">No risk detected</div>
+</div>
+
+<!-- EXPLAINABLE AI -->
+
+<h2>Explainable AI</h2>
+
+<div class="ai-explain">
+<div id="aiReason">AI Analysis: System operating normally.</div>
+</div>
+
+<!-- AI SYSTEM HEALTH -->
+
+<h2>AI System Health</h2>
+
+<div class="ai-health">
+
+<div class="health-box">
+<div class="health-title">Average Valve Health</div>
+<div id="avgHealth">--%</div>
+</div>
+
+<div class="health-box">
+<div class="health-title">Failure Risk</div>
+<div id="failureRisk">LOW</div>
+</div>
+
+<div class="health-box">
+<div class="health-title">System Stability</div>
+<div id="systemStability">STABLE</div>
+</div>
+
+</div>
+
+<!-- ENERGY MONITORING -->
+
+<h2>Energy Monitoring</h2>
+
+<div class="energy-panel">
+
+<div class="energy-card">
+<h3>Power Consumption</h3>
+<div id="powerUsage">-- kW</div>
+</div>
+
+<div class="energy-card">
+<h3>Efficiency Score</h3>
+<div id="efficiencyScore">--%</div>
+</div>
+
+<div class="energy-card">
+<h3>CO₂ Reduction</h3>
+<div id="co2Saving">-- kg</div>
+</div>
+
+</div>
+
+<!-- TELEMETRY -->
+
+<h2>Telemetry Stream</h2>
+
+<div class="telemetry-panel">
+<div>Protocol: MQTT</div>
+<div>Gateway: Edge Node 01</div>
+<div id="mqttStatus">CONNECTED</div>
+</div>
+
+<!-- EDGE COMPUTING -->
+
+<h2>Edge Gateway</h2>
+
+<div class="edge-panel">
+<div>Gateway: Edge-01</div>
+<div>Protocol: MQTT / OPC-UA</div>
+<div>Latency: <span id="edgeLatency">12 ms</span></div>
+</div>
+
+<!-- CYBER SECURITY -->
+
+<h2>Cyber Security Monitor</h2>
+
+<div class="security-monitor">
+<div>Firewall Status: ACTIVE</div>
+<div>Encryption: TLS 1.3</div>
+<div>Threat Detection: NONE</div>
+</div>
+
+<!-- MAINTENANCE LOG -->
+
+<h2>Valve Maintenance Log</h2>
+
+<div class="maintenance-panel">
+
+<table class="maintenance-table">
+
+<thead>
+<tr>
+<th>WO ID</th>
+<th>Valve</th>
+<th>Date</th>
+<th>Technician</th>
+<th>Type</th>
+<th>Description</th>
+<th>Status</th>
+<th>Next Check</th>
+</tr>
+</thead>
+
+<tbody id="maintenanceTable">
+<tr>
+<td colspan="8">No maintenance records yet</td>
+</tr>
+</tbody>
+
+</table>
+
+</div>
+<h2>Valve Maintenance Log</h2>
+
+<div class="maintenance-panel">
+
+<table class="maintenance-table">
+
+<thead>
+<tr>
+<th>WO ID</th>
+<th>Valve</th>
+<th>Date</th>
+<th>Technician</th>
+<th>Type</th>
+<th>Description</th>
+<th>Status</th>
+<th>Next Check</th>
+</tr>
+</thead>
+
+<tbody id="maintenanceTable">
+<tr>
+<td colspan="8">No maintenance records yet</td>
+</tr>
+</tbody>
+
+</table>
+
+<h3>Add Maintenance Record</h3>
+
+<div class="maintenance-form">
+
+<input type="date" id="maintDate">
+
+<input type="text" id="technician" placeholder="Technician Name">
+
+<select id="maintType">
+<option>Inspection</option>
+<option>Lubrication</option>
+<option>Seal Replacement</option>
+<option>Sensor Calibration</option>
+<option>Repair</option>
+</select>
+
+<input type="text" id="maintDesc" placeholder="Maintenance Description">
+
+<select id="maintStatus">
+<option>Completed</option>
+<option>Pending</option>
+</select>
+
+<input type="date" id="nextCheck">
+
+<button onclick="addMaintenance()">Save Record</button>
+
+</div>
+
+</div>
+
+<!-- DIGITAL TWIN -->
+
+<h2>Plant Overview</h2>
+
+<div class="plant-twin">
+
+<div class="plant-block">Tank</div>
+<div class="flow-pipe"></div>
+<div class="plant-block">Pump</div>
+<div class="flow-pipe"></div>
+
+<div class="valve-grid">
+
+<div class="valve-item"><div class="valve-icon" id="valveIcon1">V1</div><div class="alarm-light" id="alarm1"></div></div>
+<div class="valve-item"><div class="valve-icon" id="valveIcon2">V2</div><div class="alarm-light" id="alarm2"></div></div>
+<div class="valve-item"><div class="valve-icon" id="valveIcon3">V3</div><div class="alarm-light" id="alarm3"></div></div>
+<div class="valve-item"><div class="valve-icon" id="valveIcon4">V4</div><div class="alarm-light" id="alarm4"></div></div>
+<div class="valve-item"><div class="valve-icon" id="valveIcon5">V5</div><div class="alarm-light" id="alarm5"></div></div>
+<div class="valve-item"><div class="valve-icon" id="valveIcon6">V6</div><div class="alarm-light" id="alarm6"></div></div>
+<div class="valve-item"><div class="valve-icon" id="valveIcon7">V7</div><div class="alarm-light" id="alarm7"></div></div>
+<div class="valve-item"><div class="valve-icon" id="valveIcon8">V8</div><div class="alarm-light" id="alarm8"></div></div>
+<div class="valve-item"><div class="valve-icon" id="valveIcon9">V9</div><div class="alarm-light" id="alarm9"></div></div>
+<div class="valve-item"><div class="valve-icon" id="valveIcon10">V10</div><div class="alarm-light" id="alarm10"></div></div>
+
+</div>
+
+</div>
+
+<!-- DIGITAL TWIN MAP -->
+
+<h2>Digital Twin Plant Map</h2>
+
+<div class="plant-map">
+
+<div class="plant-node">Tank</div>
+<div class="flow-line"></div>
+<div class="plant-node">Pump</div>
+<div class="flow-line"></div>
+<div class="plant-node">Valve Array</div>
+<div class="flow-line"></div>
+<div class="plant-node">Processing Unit</div>
+
+</div>
+
+<!-- CHARTS -->
+
+<h2>Pressure Trend</h2>
+<canvas id="pressureChart"></canvas>
+
+<h2>Temperature Trend</h2>
+<canvas id="tempChart"></canvas>
+
+<h2>Vibration Trend</h2>
+<canvas id="vibrationChart"></canvas>
+
+<h2>Health Score Trend</h2>
+<canvas id="healthChart"></canvas>
+
+<h2>AI Failure Prediction</h2>
+<canvas id="aiChart"></canvas>
+
+<!-- FAILURE TIMER -->
+
+<h2>Failure Prediction</h2>
+
+<div class="prediction-box">
+<h3>Failure Countdown</h3>
+<div id="failureTimer">--</div>
+</div>
+
+<!-- ANOMALY DETECTION -->
+
+<h2>Anomaly Detection</h2>
+
+<div class="anomaly-panel">
+<div id="anomalyStatus">No anomalies detected</div>
+</div>
+
+<!-- REPLAY -->
+
+<h2>Historical Playback</h2>
+
+<input type="range" id="timeSlider" min="0" max="100">
+
+<div id="replayTime">Time: --</div>
+
+<!-- AR MODE -->
+
+<h2>AR Inspection Mode</h2>
+
+<button id="arModeBtn">Start Inspection Mode</button>
+
+<div id="arPanel" style="display:none">
+
+<h3>AR Inspection View</h3>
+
+<p>Point tablet camera at valve equipment.</p>
+<p>Live sensor data overlay will appear here.</p>
+
+</div>
+
+<!-- CAMERAS -->
+
+<h2>Factory Cameras</h2>
+
+<div class="camera-grid">
+
+<div class="camera-box">Camera 1<video id="cam1" autoplay muted></video></div>
+<div class="camera-box">Camera 2<video id="cam2" autoplay muted></video></div>
+<div class="camera-box">Camera 3<video id="cam3" autoplay muted></video></div>
+<div class="camera-box">Camera 4<video id="cam4" autoplay muted></video></div>
+<div class="camera-box">Camera 5<video id="cam5" autoplay muted></video></div>
+<div class="camera-box">Camera 6<video id="cam6" autoplay muted></video></div>
+<div class="camera-box">Camera 7<video id="cam7" autoplay muted></video></div>
+<div class="camera-box">Camera 8<video id="cam8" autoplay muted></video></div>
+<div class="camera-box">Camera 9<video id="cam9" autoplay muted></video></div>
+<div class="camera-box">Camera 10<video id="cam10" autoplay muted></video></div>
+</div>
+
+<audio id="alarmSound" src="alert.mp3" preload="auto"></audio>
+
+<script src="charts.js"></script>
+
+<script src="dashboard.js"></script>
+
+<script src="webcam.js"></script>
+
+<script type="module" src="./valve3d.js"></script>
+
+</body>
+</html>
